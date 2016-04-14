@@ -11,6 +11,7 @@ import com.linw.tomatotime.util.Info;
 import com.linw.tomatotime.util.SharedPrefUtil;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -31,7 +32,8 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    long workTime ;
+    long curTime = 0;
+    long workTime = 0;
     long restTime ;
     boolean status = true;//true：工作  false:休息
     SharedPrefUtil sharedPrefUtil;
@@ -45,17 +47,26 @@ public class MainActivity extends AppCompatActivity {
         this.tvtitle = (TextView) findViewById(R.id.tv_title);
         this.tvclicktime = (TextView) findViewById(R.id.tv_click_time);
 
+        curTime = System.currentTimeMillis();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(curTime);
+        calendar.set(Calendar.HOUR, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        curTime = calendar.getTimeInMillis();
+
         sharedPrefUtil = SharedPrefUtil.getSingleInstance(this);
         String workTimeStr = sharedPrefUtil.getStringKeyVal(null, Info.StrKeyWorkTime, "");
         if (workTimeStr.isEmpty()) {
-            workTime = 25 * 60 * 1000;
+            workTime = 25 * 60 * 1000 + curTime;
         } else {
             workTime = Long.valueOf(workTimeStr);
         }
 
         String restTimeStr = sharedPrefUtil.getStringKeyVal(null, Info.StrKeyRestTime, "");
         if (restTimeStr.isEmpty()) {
-            restTime = 5 * 60 * 1000;
+            restTime = 5 * 60 * 1000 + curTime;
         } else {
             restTime = Long.valueOf(restTimeStr);
         }
@@ -65,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void settime(long time) {
         if (time > 0) {
-            SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
             String timeStr = sdf.format(new Date(time));
             tvclicktime.setText(timeStr);
         } else {
@@ -97,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        timer.schedule(task, 0, 1000);
+        timer.schedule(task, 1000, 1000);
     }
 
 
