@@ -1,5 +1,6 @@
 package com.linw.tomatotime;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -7,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
-import com.linw.tomatotime.util.Info;
+import com.linw.tomatotime.data.Info;
 import com.linw.tomatotime.util.SharedPrefUtil;
 
 import java.text.SimpleDateFormat;
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
     long curTime = 0;
-    long workTime = 0;
+    long workTime ;
     long restTime ;
     boolean status = true;//true：工作  false:休息
     SharedPrefUtil sharedPrefUtil;
@@ -125,11 +126,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void pauseClick(View view) {
-        timer.cancel();
+        if (timer != null) {
+            timer.cancel();
+        }
     }
 
     public void setting(View view) {
-
+        Intent intent = new Intent(this, SettingActivity.class);
+        startActivity(intent);
     }
 
 }
