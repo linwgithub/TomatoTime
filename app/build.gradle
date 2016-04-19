@@ -44,4 +44,10 @@ dependencies {
     //配置Android annotations
     apt "org.androidannotations:androidannotations:$AAVersion"
     compile "org.androidannotations:androidannotations-api:$AAVersion"
+
+    //配置RxJava
+    // Because RxAndroid releases are few and far between, it is recommended you also
+    compile 'io.reactivex:rxandroid:1.1.0'
+    // explicitly depend on RxJava's latest version for bug fixes and new features.
+    compile 'io.reactivex:rxjava:1.1.3'
 }
