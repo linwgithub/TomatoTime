@@ -116,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
     Timer timer;
 
     private void startTime() {
+        tvtitle.setText(status ? "工作" : "休息");
         if (timer != null) {
             timer.cancel();
         }
@@ -139,13 +140,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void startWorkClick(View view) {
-        tvtitle.setText("工作");
         status = true;
         startTime();
     }
 
     public void startRestClick(View view) {
-        tvtitle.setText("休息");
         status = false;
         startTime();
     }
