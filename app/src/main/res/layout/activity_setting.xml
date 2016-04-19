@@ -8,71 +8,67 @@
     tools:context="com.linw.tomatotime.SettingActivity">
 
     <LinearLayout
+        android:id="@+id/view_worktime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="工作钟时间："
-            android:textSize="16dp" />
+            android:text="每个番茄钟工作时间："
+            android:textSize="18dp" />
 
         <EditText
             android:id="@+id/et_setting_worktime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
             android:background="@drawable/edit_bg"
-            android:hint="05:00"
+            android:hint="00:30"
             android:paddingBottom="4dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
+            android:paddingLeft="32dp"
+            android:paddingRight="32dp"
             android:paddingTop="4dp" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:background="@drawable/btn_bg"
-            android:onClick="setWorkTime"
-            android:text="设置"
-            android:textSize="18dp" />
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/view_resttime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="32dp"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="休息钟时间："
-            android:textSize="16dp" />
+            android:layout_marginTop="8dp"
+            android:text="每个番茄钟休息时间："
+            android:textSize="18dp" />
 
         <EditText
             android:id="@+id/et_setting_resttime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
             android:background="@drawable/edit_bg"
-            android:hint="30:00"
+            android:hint="00:05"
             android:paddingBottom="4dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
+            android:paddingLeft="32dp"
+            android:paddingRight="32dp"
             android:paddingTop="4dp" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:background="@drawable/btn_bg"
-            android:onClick="setRestTime"
-            android:text="设置"
-            android:textSize="18dp" />
     </LinearLayout>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/btn_bg"
+        android:onClick="setTime"
+        android:text="设置"
+        android:textSize="18dp" />
 
 </LinearLayout>

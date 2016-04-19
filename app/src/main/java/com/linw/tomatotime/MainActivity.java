@@ -1,9 +1,9 @@
 package com.linw.tomatotime;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
@@ -11,42 +11,34 @@ import android.widget.TextView;
 import com.linw.tomatotime.data.Info;
 import com.linw.tomatotime.util.SharedPrefUtil;
 
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.UiThread;
+import org.androidannotations.annotations.ViewById;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+@EActivity
 public class MainActivity extends AppCompatActivity {
 
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (msg.what == 1) {
-                if (status) {
-                    settime(workTime);
-                } else {
-                    settime(restTime);
-                }
-            }
-        }
-    };
-
     long curTime = 0;
-    long workTime ;
-    long restTime ;
+    long workTime;
+    long restTime;
     boolean status = true;//true：工作  false:休息
     SharedPrefUtil sharedPrefUtil;
+
+    @ViewById(R.id.tv_click_time)
     TextView tvclicktime;
+    @ViewById(R.id.tv_title)
     TextView tvtitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        this.tvtitle = (TextView) findViewById(R.id.tv_title);
-        this.tvclicktime = (TextView) findViewById(R.id.tv_click_time);
 
         curTime = System.currentTimeMillis();
         Calendar calendar = Calendar.getInstance();
@@ -60,30 +52,65 @@ public class MainActivity extends AppCompatActivity {
         sharedPrefUtil = SharedPrefUtil.getSingleInstance(this);
         String workTimeStr = sharedPrefUtil.getStringKeyVal(null, Info.StrKeyWorkTime, "");
         if (workTimeStr.isEmpty()) {
-            workTime = 25 * 60 * 1000 + curTime;
+//            workTime = 25 * 60 * 1000 + curTime;
+            workTime = 25 * 60 * 1000 ;//+ curTime;
         } else {
             workTime = Long.valueOf(workTimeStr);
         }
 
         String restTimeStr = sharedPrefUtil.getStringKeyVal(null, Info.StrKeyRestTime, "");
         if (restTimeStr.isEmpty()) {
-            restTime = 5 * 60 * 1000 + curTime;
+            restTime = 5 * 60 * 1000 ;//+ curTime;
         } else {
             restTime = Long.valueOf(restTimeStr);
         }
 
-        settime(workTime);
+        settime();
     }
 
-    private void settime(long time) {
-        if (time > 0) {
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+    @UiThread
+    public void settime() {
+        long time ;
+        if (status) {
+            time = workTime;
+        } else {
+            time = restTime;
+        }
+
+        if (time >= 0) {
+            SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
             String timeStr = sdf.format(new Date(time));
             tvclicktime.setText(timeStr);
         } else {
             timer.cancel();
-            //提示到时
+            shwoTimeOverDialog();
         }
+    }
+
+    private void shwoTimeOverDialog() {
+        String currTimeTitle = "工作";
+        String nextTimeTitle = "休息";
+        if (!status) {
+            currTimeTitle = "休息";
+            nextTimeTitle = "工作";
+        }
+        new AlertDialog.Builder(this)
+                .setMessage(currTimeTitle + "时间已结束，是否开启" + nextTimeTitle)
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        status = !status;
+                        tvtitle.setText(!status ? "休息" : "工作");
+                        startTime();
+                        dialog.dismiss();
+                    }
+                }).show();
     }
 
     Timer timer;
@@ -103,9 +130,7 @@ public class MainActivity extends AppCompatActivity {
                     restTime -= 1000;
                 }
 
-                Message msg = new Message();
-                msg.what = 1;
-                handler.sendMessage(msg);
+                settime();
             }
         };
 
@@ -114,13 +139,13 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void startWorkClick(View view) {
-        tvtitle.setText("工作钟");
+        tvtitle.setText("工作");
         status = true;
         startTime();
     }
 
     public void startRestClick(View view) {
-        tvtitle.setText("休息钟");
+        tvtitle.setText("休息");
         status = false;
         startTime();
     }
